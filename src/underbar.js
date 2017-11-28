@@ -96,10 +96,28 @@
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
+    var results = [];
+    _.filter(collection, function(item) {
+      if (!test(item)) {
+        results.push(item); 
+      };
+    });
+    return results;
   };
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
+    var source = array.slice();
+    var output = [];
+    var results = [];
+    var method = iterator || _.identity;
+    for (var i = 0; i < source.length; i++) {
+      if(_.indexOf(output, method(source[i]) === -1)) {
+          output.push(method(source[i]))
+          results.push(source[i]);        
+      }
+    }
+    return results;
   };
 
 
