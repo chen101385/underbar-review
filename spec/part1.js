@@ -472,6 +472,8 @@
           // FILL_ME_IN
           // Add a line here that makes this test pass
           // for a working implementation of reduce
+          //memo = iterator(memo, item);
+          orderTraversed.push(item);
           return memo;
         }, 10);
 
@@ -501,7 +503,7 @@
         expect(result).to.equal(4);
       });
 
-      it('Fill me in with a description of the behavior this test is checking for', function() {
+      it('if accumulator is equal to 0, then result will always be 0 when accumulator is multiplied by item', function() {
         var result = _.reduce([1, 2, 3], function(memo, item) {
           return memo * item;
         }, 0);

@@ -180,8 +180,30 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+     //return a single value (a primitive)
+     //accepts an object/array as input (collection)
      //if accumulator is truthy, then you iterate over entire collection;
-
+     //iterate through a collection array/object and return one value via process of concatenation;
+     
+    if (accumulator || accumulator === 0 || accumulator === false) {
+      var memo = accumulator;
+      _.each(collection, function(item) {
+      memo = iterator(memo, item);
+      });
+      /*
+      for (var i = 0; i < collection.length; i++) {
+        memo = iterator(memo, collection[i]);
+      */
+      
+    } else {
+      var memo = collection[0];
+      for (var j = 1; j < collection.length; j++) {
+        memo = iterator(memo, collection[j]);
+      }
+    }
+     
+     
+  return memo;
      //if no accumulator, then collection[0] = accumulator; 
   };
 
@@ -201,12 +223,39 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    // runs reduce(collection, iterator, accumulator)
+    // if any false, then return false; 
+    var method = iterator || _.identity;
+
+    return Boolean(_.reduce(collection, function(stillTrue, item) {
+      //evaluate whether collection item passes a test (equals true)
+      return stillTrue && method(item);
+    }, true));
+    
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+      
+
+
+    var method = iterator || _.identity;
+
+    return Boolean(_.reduce(collection, function(passedTest, item) {
+      //evaluate whether collection item passes a test (equals true)
+      return passedTest || method(item);
+    }, false));
+
+
+
+
+
+
+
+
+
   };
 
 
@@ -229,11 +278,33 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    if (arguments.length > 1) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+        //source object that we are copying properties from;
+        for (var key in source) {
+          obj[key] = source[key];
+        };
+      };
+    };
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    if (arguments.length > 1) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+        //source object that we are copying properties from;
+        for (var key in source) {
+          if (!source.hasOwnProperty(key)) {
+            obj[key] = source[key];
+          }
+        };
+      };
+    };
+    return obj;
   };
 
 
@@ -277,7 +348,29 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+  
+    return function() { 
+    var results = {};
+    //arg : func.apply(this, arguments)
+
+    var args = JSON.stringify(arguments);
+
+    if (!results.hasOwnProperty(args)) {
+      /*
+      if (typeof arguments !== 'object') {
+      results[arg] = func.call(this, arguments);
+    } else {
+      */
+      // if (arguments.length === 1) {
+      // results[args] = func.call(this, arguments);
+      // } else {
+        results[args] = func.apply(this, arguments);
+      // 
+    };
+      return results[args];
+    };
   };
+
 
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
