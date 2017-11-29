@@ -298,7 +298,7 @@
         var source = arguments[i];
         //source object that we are copying properties from;
         for (var key in source) {
-          if (!source.hasOwnProperty(key)) {
+          if (!obj.hasOwnProperty(key)) {
             obj[key] = source[key];
           }
         };
@@ -348,28 +348,19 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-  
-    return function() { 
     var results = {};
-    //arg : func.apply(this, arguments)
+    return function() { 
 
-    var args = JSON.stringify(arguments);
+      //arg : func.apply(this, arguments)
 
-    if (!results.hasOwnProperty(args)) {
-      /*
-      if (typeof arguments !== 'object') {
-      results[arg] = func.call(this, arguments);
-    } else {
-      */
-      // if (arguments.length === 1) {
-      // results[args] = func.call(this, arguments);
-      // } else {
+      var args = JSON.stringify(arguments);
+
+      if (!results.hasOwnProperty(args)) {
         results[args] = func.apply(this, arguments);
-      // 
+      };
+        return results[args];
+      };
     };
-      return results[args];
-    };
-  };
 
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -379,7 +370,22 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
-  };
+    //use setTimeout
+    //argument 1 = function (func)
+    //argument 2 = delay in ms;
+    //argument 3 etc. are the actual arguments in the function (func)
+    if (arguments.length > 2) {
+    //SCENARIO 1: more than 2 arguments;    
+      var realArguments = [];
+      for (var i = 2; i < arguments.length; i++) {
+        realArguments.push(arguments[i]);
+      };
+      setTimeout(func.apply(this, realArguments), wait);
+    } else {
+      setTimeout(func, wait);
+    };
+    //SCENARIO 2: exactly 2 arguments;  free function invocation --> function()
+  }; 
 
 
   /**
@@ -393,6 +399,35 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var results = [];
+    var input = array.slice();
+    var arrayLength = array.length;
+    
+    //a for loop for the input that does the following:
+    for (var i = 0; i < arrayLength; i++) {
+    //random index
+      var index;
+      index = Math.floor(Math.random() * (arrayLength - i));
+      results.push(input[index]);
+      input.splice(index, 1);
+    }
+
+    //var arr = [1, 8, 4, 2, 4];
+      //finds a random number via index
+      //it pushes that number to result
+      //it removes that same number from input via splice(index, 1)
+         //5 & 0; 4 & 1, 3 & 2, 2 & 3, 1 & 4, 0 & 5 
+         // arr[i], i
+
+
+    //start with an array (input)
+    //randomize it
+    //STEP 1: isolate a element of the array to push to results;  use Math.random to pick one at random
+    
+    //push original values into a new array in a random order; (Math.random)
+    //remove the same pushed value from the array and re-run.
+
+    return results;
   };
 
 
